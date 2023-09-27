@@ -32,8 +32,9 @@ namespace AnimeNeckChop
         {
             creature.brain.RemoveNoStandUpModifier(this);
         }
-        private void EventManager_onCreatureHit(Creature creature, CollisionInstance collisionInstance)
+        private void EventManager_onCreatureHit(Creature creature, CollisionInstance collisionInstance, EventTime eventTime)
         {
+            if(eventTime == EventTime.OnEnd)
             if(!creature.isPlayer && !creature.isKilled && Player.local.creature.ragdoll.parts.Contains(collisionInstance.sourceColliderGroup?.collisionHandler?.ragdollPart) && 
                 (collisionInstance.sourceColliderGroup?.collisionHandler?.ragdollPart.type == RagdollPart.Type.LeftHand || 
                 collisionInstance.sourceColliderGroup?.collisionHandler?.ragdollPart.type == RagdollPart.Type.RightHand) &&
