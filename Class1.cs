@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using ThunderRoad;
 using UnityEngine;
 
 namespace AnimeNeckChop
 {
-    public class NeckChop : LevelModule
+    public class NeckChop : ThunderScript
     {
         static List<NeckChopCreature> creatures = new List<NeckChopCreature>();
         public class NeckChopCreature
@@ -17,18 +16,22 @@ namespace AnimeNeckChop
             public float SpeakLoudness { get; set; }
             public float AudioVolume { get; set; }
         }
-        public override IEnumerator OnLoadCoroutine()
+        public override void ScriptEnable()
         {
+            base.ScriptEnable();
             EventManager.onCreatureHit += EventManager_onCreatureHit;
             EventManager.onCreatureKill += EventManager_onCreatureKill;
-            return base.OnLoadCoroutine();
         }
-
+        public override void ScriptDisable()
+        {
+            base.ScriptDisable();
+            EventManager.onCreatureHit -= EventManager_onCreatureHit;
+            EventManager.onCreatureKill -= EventManager_onCreatureKill;
+        }
         private void EventManager_onCreatureKill(Creature creature, Player player, CollisionInstance collisionInstance, EventTime eventTime)
         {
             creature.brain.RemoveNoStandUpModifier(this);
         }
-
         private void EventManager_onCreatureHit(Creature creature, CollisionInstance collisionInstance)
         {
             if(!creature.isPlayer && !creature.isKilled && Player.local.creature.ragdoll.parts.Contains(collisionInstance.sourceColliderGroup?.collisionHandler?.ragdollPart) && 
